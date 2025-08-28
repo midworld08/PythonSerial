@@ -1,5 +1,4 @@
 from cProfile import label
-from cgitb import *
 from distutils import command
 from multiprocessing.dummy import Event
 from pickle import FALSE, TRUE
@@ -183,4 +182,5 @@ MainWindow.mainloop()
 #x= text.split(",")
 #print(x)
 #['asdsadf', 'sdfsdf', 'sdfsdf', 'sdf', 'werw', 'qweqq', '1', '2', '3', '4']
+
 
