@@ -104,6 +104,9 @@ MainWindow.grid_rowconfigure(2, weight=0)
 MainWindow.grid_rowconfigure(3, weight=0)
 MainWindow.grid_rowconfigure(4, weight=0)
 MainWindow.grid_rowconfigure(5, weight=0)
+MainWindow.grid_rowconfigure(6, weight=0)
+MainWindow.grid_rowconfigure(7, weight=0)
+MainWindow.grid_rowconfigure(8, weight=0)
 MainWindow.grid_columnconfigure(0, weight=1)
 MainWindow.grid_columnconfigure(1, weight=1)
 MainWindow.grid_columnconfigure(2, weight=1)
@@ -125,6 +128,9 @@ LogoLabel.grid(row=0, column=0, columnspan=4, pady=10, padx=10, sticky='n')
 ComPortList = [comport.device for comport in serial.tools.list_ports.comports()]
 print(ComPortList)
 
+#add a separator
+ttk.Separator(MainWindow, orient='horizontal').grid(row=1, columnspan=4, sticky='ew')
+
 #************************************************Out going serial port set up on the window********************************************
 #put a label for the outgoing serial port combo box
 SerialPortOutgoingLabel = tkinter.Label(MainWindow, text="Outgoing Serial Port ")
@@ -142,10 +148,13 @@ SerialPortOutgoingCombobox.grid(row=2, column=1, sticky='we', padx=10, pady=5)
 SerialPortConnectOutgoingButton=tkinter.Button(MainWindow, width= 25, bg='Green', text="Outgoing Serial Port Connect", command=SerialConnectOutgoing)
 SerialPortConnectOutgoingButton.grid(row=2, column=2, padx=10, pady=5)
 
+#add a separator
+ttk.Separator(MainWindow, orient='horizontal').grid(row=3, columnspan=4, sticky='ew')
+
 #************************************************Incoming serial port set up on the window************************************************
 #put a label for the incoming serial port combo box
 SerialPortIncomingLabel = tkinter.Label(MainWindow, text="Incoming Serial Port ")
-SerialPortIncomingLabel.grid(row=3, column=0, sticky='w', padx=10, pady=5)
+SerialPortIncomingLabel.grid(row=4, column=0, sticky='w', padx=10, pady=5)
 
 #Add combobox to select incoming com port
 if ComPortList==[]:
@@ -154,36 +163,42 @@ if ComPortList==[]:
 else:
     SerialPortIncomingCombobox =ttk.Combobox(MainWindow, values = ComPortList, width=30)
     SerialPortIncomingCombobox.current(0) #display the value at 0, user will decide to select a different port
-SerialPortIncomingCombobox.grid(row=3, column=1, sticky='we', padx=10, pady=5)
+SerialPortIncomingCombobox.grid(row=4, column=1, sticky='we', padx=10, pady=5)
 
 #Add the connect to incoming serial port button
 SerialPortIncomingConnectButton=tkinter.Button(MainWindow, width= 25, bg='Green', text="Incoming Serial Port Connect", command=SerialConnectIncoming)
-SerialPortIncomingConnectButton.grid(row=3, column=2, padx=10, pady=5)
+SerialPortIncomingConnectButton.grid(row=4, column=2, padx=10, pady=5)
+
+#add a separator
+ttk.Separator(MainWindow, orient='horizontal').grid(row=5, columnspan=4, sticky='ew')
 
 #************************************************Logging filename window set up************************************************
 #place a label for the file name entry box
 FilenameLabel = tkinter.Label(MainWindow, text='Filename')
-FilenameLabel.grid(row=4, column=0, sticky='w', padx=10, pady=5)
+FilenameLabel.grid(row=6, column=0, sticky='w', padx=10, pady=5)
 
 #place an Entry box for entry of filename
 FilenameEntryBox = tkinter.Entry(MainWindow, width=30, border=4, textvariable=CompleteFilenameString)
 FilenameEntryBox.bind('<Return>', SetFilename )   #if the user hits return call the function
 FilenameEntryBox.insert(0,FilenameString)   #initialize with the current default filename
-FilenameEntryBox.grid(row=4, column=1, sticky='we', padx=10, pady=5)
+FilenameEntryBox.grid(row=6, column=1, sticky='we', padx=10, pady=5)
 
 #place select folder button
 SelectFolderButton = tkinter.Button(MainWindow, text="Select Folder", command=SetFolder)
-SelectFolderButton.grid(row=4, column=2, padx=10, pady=5)
+SelectFolderButton.grid(row=6, column=2, padx=10, pady=5)
 
 #place a button to turn logging on and off
 LoggingButton = tkinter.Button(MainWindow, text="Turn Logging ON", bg='Green', command=LoggingOnOff)
-LoggingButton.grid(row=4, column=3, padx=10, pady=5, sticky='e')
+LoggingButton.grid(row=6, column=3, padx=10, pady=5, sticky='e')
+
+#add a separator
+ttk.Separator(MainWindow, orient='horizontal').grid(row=7, columnspan=4, sticky='ew')
 
 #define the label to show the current folder and filename
 CompleteFilenameString=FolderString+FilenameString
 print(CompleteFilenameString)
 FilenameLocationLabel = tkinter.Label(MainWindow, text=CompleteFilenameString)
-FilenameLocationLabel.grid(row=5, column=0, columnspan=4, sticky='w', padx=10, pady=5)
+FilenameLocationLabel.grid(row=8, column=0, columnspan=4, sticky='w', padx=10, pady=5)
 
 #MainWindow setup and invoking
 MainWindow.protocol(name="WM_DELETE_WINDOW", func=MainWindowClose)    #if the user hits the windows close button enter here to close off files and serial ports and destroy
