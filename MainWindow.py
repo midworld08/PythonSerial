@@ -187,9 +187,3 @@ FilenameLocationLabel.grid(row=5, column=0, columnspan=4, sticky='w', padx=10, p
 #MainWindow setup and invoking
 MainWindow.protocol(name="WM_DELETE_WINDOW", func=MainWindowClose)    #if the user hits the windows close button enter here to close off files and serial ports and destroy
 MainWindow.mainloop()
-
-### sample code split string
-#text="asdsadf,sdfsdf,sdfsdf,sdf,werw,qweqq,1,2,3,4"
-#x= text.split(",")
-#print(x)
-#['asdsadf', 'sdfsdf', 'sdfsdf', 'sdf', 'werw', 'qweqq', '1', '2', '3', '4']
