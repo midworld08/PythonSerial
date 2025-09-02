@@ -100,6 +100,20 @@ def on_outgoing_port_selected(event):
                 SerialPortIncomingCombobox.set(port)
                 break # Exit after finding the first available port
 
+#function to handle the selection of the incoming serial port
+def on_incoming_port_selected(event):
+    print("inside on_incoming_port_selected")
+    selected_incoming_port = SerialPortIncomingCombobox.get()
+    selected_outgoing_port = SerialPortOutgoingCombobox.get()
+
+    if selected_incoming_port == selected_outgoing_port:
+        # Find a new port for the outgoing combobox
+        all_ports = SerialPortOutgoingCombobox['values']
+        for port in all_ports:
+            if port != selected_incoming_port:
+                SerialPortOutgoingCombobox.set(port)
+                break # Exit after finding the first available port
+
 #function to refresh the serial ports in the combobox
 def RefreshPorts():
     print("inside refresh ports")
@@ -127,7 +141,10 @@ def RefreshPorts():
         SerialPortIncomingCombobox['values'] = sorted_ports
         SerialPortIncomingCombobox.current(0) # Set to the lowest port
         SerialPortOutgoingCombobox['values'] = sorted_ports
-        SerialPortOutgoingCombobox.current(0)
+        if len(sorted_ports) > 1:
+            SerialPortOutgoingCombobox.current(1) # Set to the next higher port
+        else:
+            SerialPortOutgoingCombobox.current(0)
 
 #function to clean up as the window closes, close serial ports, files etc
 def MainWindowClose():
@@ -198,6 +215,7 @@ SerialPortIncomingLabel.grid(row=4, column=0, sticky='w', padx=10, pady=5)
 #Add combobox to select incoming com port
 SerialPortIncomingCombobox=ttk.Combobox(MainWindow, values=["No Comm Ports Available"], width=30)
 SerialPortIncomingCombobox.grid(row=4, column=1, sticky='we', padx=10, pady=5)
+SerialPortIncomingCombobox.bind("<<ComboboxSelected>>", on_incoming_port_selected)
 
 #Add the connect to incoming serial port button
 SerialPortIncomingConnectButton=tkinter.Button(MainWindow, width= 25, bg='Green', text="Incoming Serial Port Connect", command=SerialConnectIncoming)
