@@ -157,8 +157,8 @@ SerialPortConnectOutgoingButton=tkinter.Button(MainWindow, width= 25, bg='Green'
 SerialPortConnectOutgoingButton.grid(row=2, column=2, padx=10, pady=5)
 
 #Add the refresh ports button
-RefreshPortsButton=tkinter.Button(MainWindow, text="Refresh Ports", command=RefreshPorts)
-RefreshPortsButton.grid(row=2, column=3, padx=10, pady=5)
+RefreshPortsButtonOutgoing=tkinter.Button(MainWindow, text="Refresh Ports", command=RefreshPorts)
+RefreshPortsButtonOutgoing.grid(row=2, column=3, padx=10, pady=5)
 
 #add a separator
 ttk.Separator(MainWindow, orient='horizontal').grid(row=3, columnspan=4, sticky='ew')
@@ -175,6 +175,10 @@ SerialPortIncomingCombobox.grid(row=4, column=1, sticky='we', padx=10, pady=5)
 #Add the connect to incoming serial port button
 SerialPortIncomingConnectButton=tkinter.Button(MainWindow, width= 25, bg='Green', text="Incoming Serial Port Connect", command=SerialConnectIncoming)
 SerialPortIncomingConnectButton.grid(row=4, column=2, padx=10, pady=5)
+
+#Add the refresh ports button
+RefreshPortsButtonIncoming=tkinter.Button(MainWindow, text="Refresh Ports", command=RefreshPorts)
+RefreshPortsButtonIncoming.grid(row=4, column=3, padx=10, pady=5)
 
 #add a separator
 ttk.Separator(MainWindow, orient='horizontal').grid(row=5, columnspan=4, sticky='ew')
