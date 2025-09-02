@@ -119,32 +119,31 @@ def RefreshPorts():
     print("inside refresh ports")
     #get the list of available com ports
     ComPortList = [comport.device for comport in serial.tools.list_ports.comports()]
-    print(ComPortList)
-    if not ComPortList:
+
+    # Sort ports by the number in the port name, handles cases like 'COM10' vs 'COM2'
+    try:
+        sorted_ports = sorted(ComPortList, key=lambda x: int("".join(filter(str.isdigit, x))))
+    except ValueError:
+        # Fallback to alphanumeric sort if port names are not standard (e.g., /dev/ttyS0)
+        sorted_ports = sorted(ComPortList)
+
+    print(sorted_ports)
+
+    if not sorted_ports:
         SerialPortOutgoingCombobox['values'] = ["No Comm Ports Available"]
         SerialPortOutgoingCombobox.current(0) #display the value at 0
         SerialPortIncomingCombobox['values'] = ["No Comm Ports Available"]
         SerialPortIncomingCombobox.current(0)
-    elif len(ComPortList) == 1:
-        SerialPortIncomingCombobox['values'] = ComPortList
+    elif len(sorted_ports) == 1:
+        SerialPortIncomingCombobox['values'] = sorted_ports
         SerialPortIncomingCombobox.current(0)
         SerialPortOutgoingCombobox['values'] = ["No Comm Ports Available"]
         SerialPortOutgoingCombobox.current(0)
     else:
-        # Sort ports by the number in the port name, handles cases like 'COM10' vs 'COM2'
-        try:
-            sorted_ports = sorted(ComPortList, key=lambda x: int("".join(filter(str.isdigit, x))))
-        except ValueError:
-            # Fallback to alphanumeric sort if port names are not standard (e.g., /dev/ttyS0)
-            sorted_ports = sorted(ComPortList)
-
         SerialPortIncomingCombobox['values'] = sorted_ports
         SerialPortIncomingCombobox.current(0) # Set to the lowest port
         SerialPortOutgoingCombobox['values'] = sorted_ports
-        if len(sorted_ports) > 1:
-            SerialPortOutgoingCombobox.current(1) # Set to the next higher port
-        else:
-            SerialPortOutgoingCombobox.current(0)
+        SerialPortOutgoingCombobox.current(1) # Set to the next higher port
 
 #function to clean up as the window closes, close serial ports, files etc
 def MainWindowClose():
