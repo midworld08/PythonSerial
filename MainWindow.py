@@ -86,22 +86,48 @@ def SerialConnectOutgoing():
         SerialPortConnectedOutgoingBool=True
         SerialPortConnectOutgoingButton.configure(text='Outgoing Serial Port Disconnect', background='Red')
 
+#function to handle the selection of the outgoing serial port
+def on_outgoing_port_selected(event):
+    print("inside on_outgoing_port_selected")
+    selected_outgoing_port = SerialPortOutgoingCombobox.get()
+    selected_incoming_port = SerialPortIncomingCombobox.get()
+
+    if selected_outgoing_port == selected_incoming_port:
+        # Find a new port for the incoming combobox
+        all_ports = SerialPortIncomingCombobox['values']
+        for port in all_ports:
+            if port != selected_outgoing_port:
+                SerialPortIncomingCombobox.set(port)
+                break # Exit after finding the first available port
+
 #function to refresh the serial ports in the combobox
 def RefreshPorts():
     print("inside refresh ports")
     #get the list of available com ports
     ComPortList = [comport.device for comport in serial.tools.list_ports.comports()]
     print(ComPortList)
-    if ComPortList==[]:
+    if not ComPortList:
         SerialPortOutgoingCombobox['values'] = ["No Comm Ports Available"]
         SerialPortOutgoingCombobox.current(0) #display the value at 0
         SerialPortIncomingCombobox['values'] = ["No Comm Ports Available"]
         SerialPortIncomingCombobox.current(0)
-    else:
-        SerialPortOutgoingCombobox['values'] = ComPortList
-        SerialPortOutgoingCombobox.current(0) #display the value at 0
+    elif len(ComPortList) == 1:
         SerialPortIncomingCombobox['values'] = ComPortList
         SerialPortIncomingCombobox.current(0)
+        SerialPortOutgoingCombobox['values'] = ["No Comm Ports Available"]
+        SerialPortOutgoingCombobox.current(0)
+    else:
+        # Sort ports by the number in the port name, handles cases like 'COM10' vs 'COM2'
+        try:
+            sorted_ports = sorted(ComPortList, key=lambda x: int("".join(filter(str.isdigit, x))))
+        except ValueError:
+            # Fallback to alphanumeric sort if port names are not standard (e.g., /dev/ttyS0)
+            sorted_ports = sorted(ComPortList)
+
+        SerialPortIncomingCombobox['values'] = sorted_ports
+        SerialPortIncomingCombobox.current(0) # Set to the lowest port
+        SerialPortOutgoingCombobox['values'] = sorted_ports
+        SerialPortOutgoingCombobox.current(0)
 
 #function to clean up as the window closes, close serial ports, files etc
 def MainWindowClose():
@@ -151,6 +177,7 @@ SerialPortOutgoingLabel.grid(row=2, column=0, sticky='w', padx=10, pady=5)
 #Add combobox to select Outgoing com port
 SerialPortOutgoingCombobox=ttk.Combobox(MainWindow, values=["No Comm Ports Available"], width=30)
 SerialPortOutgoingCombobox.grid(row=2, column=1, sticky='we', padx=10, pady=5)
+SerialPortOutgoingCombobox.bind("<<ComboboxSelected>>", on_outgoing_port_selected)
 
 #Add the connect to outgoing serial port button
 SerialPortConnectOutgoingButton=tkinter.Button(MainWindow, width= 25, bg='Green', text="Outgoing Serial Port Connect", command=SerialConnectOutgoing)
