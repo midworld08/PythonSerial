@@ -86,6 +86,23 @@ def SerialConnectOutgoing():
         SerialPortConnectedOutgoingBool=True
         SerialPortConnectOutgoingButton.configure(text='Outgoing Serial Port Disconnect', background='Red')
 
+#function to refresh the serial ports in the combobox
+def RefreshPorts():
+    print("inside refresh ports")
+    #get the list of available com ports
+    ComPortList = [comport.device for comport in serial.tools.list_ports.comports()]
+    print(ComPortList)
+    if ComPortList==[]:
+        SerialPortOutgoingCombobox['values'] = ["No Comm Ports Available"]
+        SerialPortOutgoingCombobox.current(0) #display the value at 0
+        SerialPortIncomingCombobox['values'] = ["No Comm Ports Available"]
+        SerialPortIncomingCombobox.current(0)
+    else:
+        SerialPortOutgoingCombobox['values'] = ComPortList
+        SerialPortOutgoingCombobox.current(0) #display the value at 0
+        SerialPortIncomingCombobox['values'] = ComPortList
+        SerialPortIncomingCombobox.current(0)
+
 #function to clean up as the window closes, close serial ports, files etc
 def MainWindowClose():
     print("Window Exiting")
@@ -124,10 +141,6 @@ LogoPhoto = ImageTk.PhotoImage(LogoResized)   #covert to a form that can be disp
 LogoLabel = tkinter.Label(image=LogoPhoto) #create the label to display the image
 LogoLabel.grid(row=0, column=0, columnspan=4, pady=10, padx=10, sticky='n')
 
-#get the list of available com ports
-ComPortList = [comport.device for comport in serial.tools.list_ports.comports()]
-print(ComPortList)
-
 #add a separator
 ttk.Separator(MainWindow, orient='horizontal').grid(row=1, columnspan=4, sticky='ew')
 
@@ -136,17 +149,16 @@ ttk.Separator(MainWindow, orient='horizontal').grid(row=1, columnspan=4, sticky=
 SerialPortOutgoingLabel = tkinter.Label(MainWindow, text="Outgoing Serial Port ")
 SerialPortOutgoingLabel.grid(row=2, column=0, sticky='w', padx=10, pady=5)
 #Add combobox to select Outgoing com port
-if ComPortList==[]:
-    SerialPortOutgoingCombobox=ttk.Combobox(MainWindow, values=["No Comm Ports Available"], width=30)
-    SerialPortOutgoingCombobox.current(0) #display the value at 0
-else:
-    SerialPortOutgoingCombobox =ttk.Combobox(MainWindow, values = ComPortList, width=30)
-    SerialPortOutgoingCombobox.current(0) #display the value at 0, user will decide to select a different port
+SerialPortOutgoingCombobox=ttk.Combobox(MainWindow, values=["No Comm Ports Available"], width=30)
 SerialPortOutgoingCombobox.grid(row=2, column=1, sticky='we', padx=10, pady=5)
 
 #Add the connect to outgoing serial port button
 SerialPortConnectOutgoingButton=tkinter.Button(MainWindow, width= 25, bg='Green', text="Outgoing Serial Port Connect", command=SerialConnectOutgoing)
 SerialPortConnectOutgoingButton.grid(row=2, column=2, padx=10, pady=5)
+
+#Add the refresh ports button
+RefreshPortsButton=tkinter.Button(MainWindow, text="Refresh Ports", command=RefreshPorts)
+RefreshPortsButton.grid(row=2, column=3, padx=10, pady=5)
 
 #add a separator
 ttk.Separator(MainWindow, orient='horizontal').grid(row=3, columnspan=4, sticky='ew')
@@ -157,12 +169,7 @@ SerialPortIncomingLabel = tkinter.Label(MainWindow, text="Incoming Serial Port "
 SerialPortIncomingLabel.grid(row=4, column=0, sticky='w', padx=10, pady=5)
 
 #Add combobox to select incoming com port
-if ComPortList==[]:
-    SerialPortIncomingCombobox=ttk.Combobox(MainWindow, values=["No Comm Ports Available"], width=30)
-    SerialPortIncomingCombobox.current(0) #display the value at 0
-else:
-    SerialPortIncomingCombobox =ttk.Combobox(MainWindow, values = ComPortList, width=30)
-    SerialPortIncomingCombobox.current(0) #display the value at 0, user will decide to select a different port
+SerialPortIncomingCombobox=ttk.Combobox(MainWindow, values=["No Comm Ports Available"], width=30)
 SerialPortIncomingCombobox.grid(row=4, column=1, sticky='we', padx=10, pady=5)
 
 #Add the connect to incoming serial port button
@@ -199,6 +206,8 @@ CompleteFilenameString=FolderString+FilenameString
 print(CompleteFilenameString)
 FilenameLocationLabel = tkinter.Label(MainWindow, text=CompleteFilenameString)
 FilenameLocationLabel.grid(row=8, column=0, columnspan=4, sticky='w', padx=10, pady=5)
+
+RefreshPorts() #as the window opens refresh the serial ports
 
 #MainWindow setup and invoking
 MainWindow.protocol(name="WM_DELETE_WINDOW", func=MainWindowClose)    #if the user hits the windows close button enter here to close off files and serial ports and destroy
